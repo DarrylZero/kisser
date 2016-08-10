@@ -1,0 +1,139 @@
+<project name="xmlstreaming3"
+         basedir="../.."
+         default="xmlstreaming3.lib.public">
+    <!-- Секция импорта файлов -->
+
+    <import file="../rtti/rtti.xml"/>
+    <import file="../../components/easyxml/easyxml.xml"/>
+    <import file="../streaming/streaming.xml"/>
+    <!--<import file="../../../commonlibs/anttasksdefinitions.xml"/>-->
+
+
+    <path id="xmlstreaming3.class.path">
+
+        <pathelement path="build/components/rtti/classes"/>
+        <pathelement path="build/components/easyxml/classes"/>
+        <pathelement path="build/components/streaming/classes"/>
+        <pathelement path="build/components/xmlstreaming3/classes"/>
+
+
+        <fileset dir="../commonlibs">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="../libraries/libs">
+            <include name="junit.jar"/>
+        </fileset>
+    </path>
+
+    <target name="xmlstreaming3.clear">
+        <delete dir="build/components/xmlstreaming3"/>
+    </target>
+
+    <property file="components/xmlstreaming3/xmlstreaming3.properties"/>
+
+    <target name="xmlstreaming3.jar.check">
+        <uptodate property="xmlstreaming3.jar.skip"
+                  targetfile="../commonlibs/xmlstreaming3.jar">
+
+            <srcfiles dir="components/xmlstreaming3/src"/>
+            <srcfiles dir="components/xmlstreaming3/META-INF"/>
+            <srcfiles file="components/xmlstreaming3/xmlstreaming3.xml"/>
+            <srcfiles file="components/xmlstreaming3/xmlstreaming3.properties"/>
+        </uptodate>
+    </target>
+
+
+    <target name="xmlstreaming3.jar"
+            depends="streaming.jar,
+            easyxml.jar,
+            xmlstreaming3.jar.check"
+            unless="xmlstreaming3.jar.skip">
+
+        <mkdir dir="build/components/xmlstreaming3"/>
+        <mkdir dir="build/components/xmlstreaming3/classes"/>
+
+        <filechecker startpath="components/xmlstreaming3/src"/>
+        <!-- Построение компонента -->
+        <javac target="1.6" source="1.6"
+               srcdir="components/xmlstreaming3/src"
+               destdir="build/components/xmlstreaming3/classes"
+               debug="true"
+               optimize="on"
+               encoding="utf-8"
+               classpathref="xmlstreaming3.class.path">
+        </javac>
+
+        <copydir src="components/xmlstreaming3/META-INF"
+                 dest="build/components/xmlstreaming3/classes/META-INF"/>
+
+        <copy todir="build/components/xmlstreaming3/classes/META-INF">
+            <fileset dir="components/licenses">
+                <include name="Lic*.txt"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+        <!-- application file -->
+        <jar destfile="../commonlibs/xmlstreaming3.jar"
+             basedir="build/components/xmlstreaming3/classes"
+             compress="false">
+            <manifest>
+                <attribute name="Version" value="${xmlstreaming3.build.version}"/>
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="xmlstreaming3-smart-copy-public"
+            description="coping the source code for common use"
+            depends="xmlstreaming3.jar">
+
+        <mkdir dir="components/xmlstreaming3/temp"/>
+        <smartcopy sourcedir="components/xmlstreaming3/src"
+                   targetdir="components/xmlstreaming3/temp">
+            <item value="Public API"/>
+        </smartcopy>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="xmlstreaming3.lib.public"
+            description="build library for common use"
+            depends="xmlstreaming3.jar,
+            xmlstreaming3-smart-copy-public">
+
+
+        <!--копируем Jar -->
+        <copy todir="build/components/xmlstreaming3/temp">
+            <fileset dir="build/components">
+                <include name="xmlstreaming3.jar"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+        <jar destfile="../commonlibs/xmlstreaming3-src.jar"
+             basedir="components/xmlstreaming3/temp"
+             compress="true">
+        </jar>
+
+        <delete dir="components/xmlstreaming3/temp"/>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="xmlstreaming3.lib.all"
+            description="build library for common use"
+            depends="xmlstreaming3.jar, xmlstreaming3.lib.public">
+
+        <jar destfile="../commonlibs/xmlstreaming3-src-all.jar"
+             basedir="components/xmlstreaming3/src"
+             compress="true">
+        </jar>
+
+    </target>
+
+</project>

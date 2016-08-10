@@ -1,0 +1,217 @@
+<project name="properties"
+         basedir="../..">
+    <!-- Секция импорта файлов -->
+    <!--<import file="../../../commonlibs/anttasksdefinitions.xml"/>-->
+
+    <!--<path id="properties.class.path">-->
+        <!--<pathelement path="build/components/properties/classes"/>-->
+        <!--<pathelement path="build/components/properties/tests"/>-->
+
+        <!--<fileset dir="libraries/libs">-->
+            <!--<include name="*.jar"/>-->
+        <!--</fileset>-->
+        <!--<fileset dir="libraries/clibs">-->
+            <!--<include name="*.jar"/>-->
+        <!--</fileset>-->
+    <!--</path>-->
+
+    <target name="properties.clear">
+        <delete dir="build/components/properties"/>
+    </target>
+
+    <!--<target name="properties.jar.check">-->
+        <!--<uptodate property="properties.jar.skip"-->
+                  <!--targetfile="build/components/properties.jar">-->
+            <!--<srcfiles dir="components/properties/META-INF"/>-->
+            <!--<srcfiles dir="components/properties/src"/>-->
+            <!--<srcfiles dir="components/properties/tests"/>-->
+            <!--<srcfiles file="components/properties/properties.xml"/>-->
+        <!--</uptodate>-->
+    <!--</target>-->
+
+    <!--unless="properties.jar.skip"-->
+    <!--<target name="properties.jar"-->
+            <!--depends="properties.jar.check"-->
+            <!--unless="properties.jar.skip">-->
+
+        <!--<mkdir dir="build/components/properties"/>-->
+        <!--<mkdir dir="build/components/properties/classes"/>-->
+        <!--<mkdir dir="build/components/properties/tests"/>-->
+
+        <!-- Построение компонента -->
+        <!--<javac target="1.6" source="1.6"-->
+               <!--srcdir="components/properties/src"-->
+               <!--destdir="build/components/properties/classes"-->
+               <!--debug="true"-->
+               <!--optimize="on"-->
+               <!--encoding="utf-8"-->
+               <!--classpathref="properties.class.path">-->
+        <!--</javac>-->
+
+        <!-- Построение теста компонента -->
+        <!--<javac target="1.6" source="1.6"-->
+               <!--srcdir="components/properties/tests"-->
+               <!--destdir="build/components/properties/tests"-->
+               <!--debug="true"-->
+               <!--optimize="on"-->
+               <!--encoding="utf-8"-->
+               <!--classpathref="properties.class.path">-->
+        <!--</javac>-->
+
+        <!-- Выполенние теста компонента -->
+        <!--<junit fork="yes"-->
+               <!--haltonfailure="yes"-->
+               <!--printsummary="yes">-->
+
+            <!--<formatter-->
+                    <!--type="plain"-->
+                    <!--usefile="false"/>-->
+
+            <!--<classpath refid="properties.class.path"/>-->
+
+
+            <!--<jvmarg-->
+                    <!--value="-enableassertions"/>-->
+
+            <!--<batchtest>-->
+                <!--<fileset dir="components/properties/tests">-->
+                    <!--<include name="**/*Test.java"/>-->
+                    <!--<include name="**/*Check.java"/>-->
+                <!--</fileset>-->
+            <!--</batchtest>-->
+        <!--</junit>-->
+
+        <!--<copydir src="components/properties/META-INF"-->
+                 <!--dest="build/components/properties/classes/META-INF"/>-->
+
+    <!--<_copyfile src="components/licenses/LicenseRus.txt" dest="build/components/streaming/classes/META-INF/LicenseRus.txt"/>-->
+    
+        <!-- application file -->
+        <!--<jar destfile="build/components/properties.jar"-->
+             <!--basedir="build/components/properties/classes"-->
+             <!--compress="false">-->
+            <!--<manifest>-->
+                <!--<attribute name="Built-By" value="${user.name}"/>-->
+                <!--<section name="ru/steamengine/properties">-->
+                    <!--<attribute name="Implementation-Title" value="Serialization"/>-->
+                    <!--<attribute name="Implementation-Vendor" value="Steamengine corp."/>-->
+                <!--</section>-->
+            <!--</manifest>-->
+        <!--</jar>-->
+
+    <!--</target>-->
+
+
+    <!--<target name="smart-copy-public"-->
+            <!--description="coping the source codes for common use"-->
+            <!--depends="properties.jar">-->
+
+        <!--<basename property="file.source" file="src"/>-->
+        <!--<basename property="file.dest" file="temp"/>-->
+
+
+        <!--<exec executable="java"-->
+              <!--vmlauncher="false"-->
+              <!--spawn="false"-->
+              <!--failonerror="true"-->
+              <!--dir="components/properties">-->
+
+            <!--<env key="JAVA_HOME" value="${java.home}"/>-->
+            <!--<env key="CLASSPATH" file="libraries/own/buildutils.jar"/>-->
+            <!--<arg value="ru.steamengine.buildutils.SmartCopy"/>-->
+            <!--<arg value="${file.source}"/>-->
+            <!--<arg value="${file.dest}"/>-->
+            <!--<arg value="Public API"/>-->
+
+        <!--</exec>-->
+    <!--</target>-->
+
+    <!--<target name="smart-copy-all"-->
+            <!--description="coping the source codes for common use"-->
+            <!--depends="properties.jar">-->
+
+        <!--<basename property="file.source" file="src"/>-->
+        <!--<basename property="file.dest" file="temp"/>-->
+
+
+        <!--<exec executable="java"-->
+              <!--vmlauncher="false"-->
+              <!--spawn="false"-->
+              <!--failonerror="true"-->
+              <!--dir="components/properties">-->
+
+            <!--<env key="JAVA_HOME" value="${java.home}"/>-->
+            <!--<env key="CLASSPATH" file="libraries/own/buildutils.jar"/>-->
+            <!--<arg value="ru.steamengine.buildutils.SmartCopy"/>-->
+            <!--<arg value="${file.source}"/>-->
+            <!--<arg value="${file.dest}"/>-->
+            <!--<arg value="class"/>-->
+            <!--<arg value="interface"/>-->
+            <!--<arg value="enum"/>-->
+
+        <!--</exec>-->
+    <!--</target>-->
+
+
+    <!--<target name="properties.zip.check"-->
+            <!--depends="smart-copy-public">-->
+        <!--<uptodate property="properties.zip.skip"-->
+                  <!--targetfile="build/components/properties-src.jar">-->
+            <!--<srcfiles file="build/components/properties.jar"/>-->
+            <!--<srcfiles dir="components/properties/temp"/>-->
+        <!--</uptodate>-->
+    <!--</target>-->
+
+
+    <!--построение библиотеки-->
+    <!--<target name="properties.lib.public"-->
+            <!--description="build library for common use"-->
+            <!--depends="properties.jar, smart-copy-public, properties.zip.check"-->
+            <!--unless="properties.zip.skip">-->
+
+
+        <!--копируем Jar -->
+        <!--<copy todir="build/components/properties/temp">-->
+            <!--<fileset dir="build/components">-->
+                <!--<include name="properties.jar"/>-->
+            <!--</fileset>-->
+
+            <!--<filterchain>-->
+                <!--<expandproperties/>-->
+            <!--</filterchain>-->
+        <!--</copy>-->
+
+        <!--<jar destfile="build/components/properties-src.jar"-->
+             <!--basedir="components/properties/temp"-->
+             <!--compress="true">-->
+        <!--</jar>-->
+
+        <!--<delete dir="components/properties/temp"/>-->
+    <!--</target>-->
+
+
+    <!--построение библиотеки-->
+    <!--<target name="properties.lib.all"-->
+            <!--description="build library for common use"-->
+            <!--depends="properties.jar, smart-copy-all">-->
+
+
+        <!--копируем Jar -->
+        <!--<copy todir="build/components/properties/temp">-->
+            <!--<fileset dir="build/components">-->
+                <!--<include name="properties.jar"/>-->
+            <!--</fileset>-->
+            <!--<filterchain>-->
+                <!--<expandproperties/>-->
+            <!--</filterchain>-->
+        <!--</copy>-->
+
+        <!--<jar destfile="build/components/properties-src.jar"-->
+             <!--basedir="components/properties/temp"-->
+             <!--compress="true">-->
+        <!--</jar>-->
+
+        <!--<delete dir="components/properties/temp"/>-->
+    <!--</target>-->
+
+</project>

@@ -1,3 +1,3 @@
 # kisser
 
-first file to mark the repository
+project in a DRAFT state

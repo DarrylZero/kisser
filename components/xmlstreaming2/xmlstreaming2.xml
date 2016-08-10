@@ -1,0 +1,142 @@
+<project name="xmlstreaming2"
+         basedir="../.."
+         default="xmlstreaming2.lib.public">
+    <!-- Секция импорта файлов -->
+
+    <import file="../rtti/rtti.xml"/>
+    <import file="../../components/easyxml/easyxml.xml"/>
+    <import file="../streaming/streaming.xml"/>
+    <!--<import file="../../../commonlibs/anttasksdefinitions.xml"/>-->
+
+
+    <path id="xmlstreaming2.class.path">
+        <pathelement path="build/components/rtti/classes"/>
+        <pathelement path="build/components/easyxml/classes"/>
+        <pathelement path="build/components/streaming/classes"/>
+        <pathelement path="build/components/xmlstreaming2/classes"/>
+
+        <fileset dir="../commonlibs">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="../libraries/libs">
+            <include name="junit.jar"/>
+        </fileset>
+    </path>
+
+    <target name="xmlstreaming2.clear">
+        <delete dir="build/components/xmlstreaming2"/>
+    </target>
+
+    <property file="components/xmlstreaming2/xmlstreaming2.properties"/>
+
+    <target name="xmlstreaming2.jar.check">
+        <uptodate property="xmlstreaming2.jar.skip"
+                  targetfile="../commonlibs/xmlstreaming2.jar">
+
+            <srcfiles dir="components/xmlstreaming2/src"/>
+            <srcfiles dir="components/xmlstreaming2/META-INF"/>
+            <srcfiles file="components/xmlstreaming2/xmlstreaming2.xml"/>
+            <srcfiles file="components/xmlstreaming2/xmlstreaming2.properties"/>
+        </uptodate>
+    </target>
+
+    <taskdef name="filechecker"
+             classname="ru.steamengine.helpers.anttasks.filechecker.FileChecker"
+             classpathref="xmlstreaming2.class.path"/>
+
+    <target name="xmlstreaming2.jar"
+            depends="streaming.jar,
+            easyxml.jar,
+            xmlstreaming2.jar.check"
+            unless="xmlstreaming2.jar.skip">
+
+        <mkdir dir="build/components/xmlstreaming2"/>
+        <mkdir dir="build/components/xmlstreaming2/classes"/>
+
+        <!--<filechecker enabled="false" startpath="components/xmlstreaming2/src"/>-->
+        <filechecker startpath="components/xmlstreaming2/src"/>
+        <!-- Построение компонента -->
+        <javac target="1.6"
+               source="1.6"
+               srcdir="components/xmlstreaming2/src"
+               destdir="build/components/xmlstreaming2/classes"
+               debug="true"
+               optimize="on"
+               encoding="utf-8"
+               classpathref="xmlstreaming2.class.path">
+        </javac>
+
+        <copydir src="components/xmlstreaming2/META-INF"
+                 dest="build/components/xmlstreaming2/classes/META-INF"/>
+
+        <copy todir="build/components/xmlstreaming2/classes/META-INF">
+            <fileset dir="components/licenses">
+                <include name="Lic*.txt"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+        <!-- application file -->
+        <jar destfile="../commonlibs/xmlstreaming2.jar"
+             basedir="build/components/xmlstreaming2/classes"
+             compress="false">
+            <manifest>
+                <attribute name="Version" value="${xmlstreaming2.build.version}"/>
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="xmlstreaming2-smart-copy-public"
+            description="coping the source code for common use"
+            depends="xmlstreaming2.jar">
+        <mkdir dir="components/xmlstreaming2/temp"/>
+        <smartcopy sourcedir="components/xmlstreaming2/src"
+                   targetdir="components/xmlstreaming2/temp">
+            <item value="Public API"/>
+        </smartcopy>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="xmlstreaming2.lib.public"
+            description="build library for common use"
+            depends="xmlstreaming2.jar,
+            xmlstreaming2-smart-copy-public">
+
+
+        <!--копируем Jar -->
+        <copy todir="build/components/xmlstreaming2/temp">
+            <fileset dir="build/components">
+                <include name="xmlstreaming2.jar"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+        <jar destfile="../commonlibs/xmlstreaming2-src.jar"
+             basedir="components/xmlstreaming2/temp"
+             compress="true">
+        </jar>
+
+        <delete dir="components/xmlstreaming2/temp"/>
+    </target>
+
+    <!--построение библиотеки-->
+    <target name="xmlstreaming2.lib.all"
+            description="build library for common use"
+            depends="xmlstreaming2.jar, xmlstreaming2.lib.public">
+
+        <jar destfile="../commonlibs/xmlstreaming2-src-all.jar"
+             basedir="components/xmlstreaming2/src"
+             compress="true">
+        </jar>
+
+        <delete dir="components/xmlstreaming2/temp"/>
+    </target>
+
+
+</project>

@@ -1,0 +1,166 @@
+<project
+        name="rttibase"
+        basedir="../.."
+        default="rttibase.lib.all">
+
+    <!-- Секция импорта файлов -->
+
+
+    <path id="rttibase.class.path">
+        <pathelement path="build/components/rttibase/classes"/>
+        <pathelement path="build/components/rttibase/tests"/>
+
+        <fileset dir="../commonlibs">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef name="smartcopy"
+             classname="ru.steamengine.helpers.anttasks.smartcopy.SmartCopy"
+             classpathref="rttibase.class.path"/>
+
+    <taskdef name="filechecker"
+             classname="ru.steamengine.helpers.anttasks.filechecker.FileChecker"
+             classpathref="rttibase.class.path"/>
+
+    <property file = "components/rttibase/rttibase.properties"/>
+
+    <target name="rttibase.clear.lib">
+        <delete dir="build/components/rttibase"/>
+    </target>
+
+    <target name="rttibase.clear.all">
+        <delete dir="build/components/rttibase"/>
+        <delete file="../commonlibs/rttibase.jar"/>
+        <delete file="../commonlibs/rttibase-src.jar.jar"/>
+    </target>
+
+    <target name="rttibase.jar.check">
+        <uptodate property="rttibase.jar.skip"
+                  targetfile="../commonlibs/rttibase.jar">
+
+            <srcfiles dir="components/rttibase/META-INF"/>
+            <srcfiles dir="components/rttibase/src"/>
+            <srcfiles file="components/rttibase/rttibase.xml"/>
+            <srcfiles file="components/rttibase/rttibase.properties"/>
+        </uptodate>
+    </target>
+
+
+    <!--unless="rttibase.jar.skip"-->
+    <target name="rttibase.jar"
+            depends="rttibase.jar.check"
+            unless="rttibase.jar.skip">
+
+        <mkdir dir="build/components/rttibase"/>
+        <mkdir dir="build/components/rttibase/classes"/>
+        <mkdir dir="build/components/rttibase/tests"/>
+
+        <filechecker startpath="components/rttibase/src"/>
+
+        <!-- Построение компонента -->
+        <javac target="1.6"
+               source="1.6"
+               srcdir="components/rttibase/src"
+               destdir="build/components/rttibase/classes"
+               debug="true"
+               optimize="on"
+               encoding="utf-8"
+               classpathref="rttibase.class.path">
+        </javac>
+
+        <copydir src="components/rttibase/META-INF" dest="build/components/rttibase/classes/META-INF"/>
+
+        <copy todir="build/components/rttibase/classes/META-INF">
+             <fileset dir="components/licenses">
+                 <include name="Lic*.txt"/>
+             </fileset>
+             <filterchain>
+                 <expandproperties/>
+             </filterchain>
+         </copy>
+
+
+        <!-- application file -->
+        <jar destfile="../commonlibs/rttibase.jar"
+             basedir="build/components/rttibase/classes"
+             compress="false">
+            <manifest>
+                <attribute name="productname" value="${rttibase.build.productname}"/>
+                <attribute name="version" value="${rttibase.build.version}"/>
+            </manifest>
+        </jar>
+
+    </target>
+
+
+    <target name="rttibase.smart-copy-public"
+            description="coping the source codes for common use"
+            depends="rttibase.jar">
+
+        <mkdir dir="components/rttibase/temp"/>
+        <smartcopy sourcedir="components/rttibase/src" targetdir="components/rttibase/temp" >
+            <item value="Public API"/>
+        </smartcopy>
+    </target>
+
+    <target name="rttibase.smart-copy-all"
+            description="coping the source codes for common use"
+            depends="rttibase.jar">
+
+        <mkdir dir="components/rttibase/temp"/>
+        <smartcopy
+                debug="true"
+                sourcedir="components/rttibase/src"
+                targetdir="components/rttibase/temp" >
+
+            <item complexmatcher="ru.steamengine.helpers.anttasks.smartcopy.SimpleMatcher"/>
+        </smartcopy>
+    </target>
+
+
+    <target name="rttibase.zip.check"
+            depends="rttibase.smart-copy-public">
+        <uptodate property="rttibase.zip.skip"
+                  targetfile="../commonlibs/rttibase-src.jar">
+            <srcfiles file="../commonlibs/rttibase.jar"/>
+            <srcfiles dir="components/rttibase/temp"/>
+        </uptodate>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="rttibase.lib.public"
+            description="build library for common use"
+            depends="
+            rttibase.jar,
+            rttibase.smart-copy-public,
+            rttibase.zip.check"
+            unless="rttibase.zip.skip">
+
+
+        <!--копируем Jar -->
+        <copyfile src="../commonlibs/rttibase.jar" dest="build/components/rttibase/temp/rttibase.jar"/>
+
+        <jar destfile="../commonlibs/rttibase-src.jar"
+             basedir="components/rttibase/temp"
+             compress="true">
+        </jar>
+
+        <delete dir="components/rttibase/temp"/>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="rttibase.lib.all"
+            description="build library for common use"
+            depends="rttibase.jar, rttibase.lib.public">
+
+        <jar destfile="../commonlibs/rttibase-src-all.jar"
+             basedir="components/rttiutils/src"
+             compress="true">
+        </jar>
+        
+    </target>
+
+</project>

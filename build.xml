@@ -1,0 +1,78 @@
+<project name="JavaProjects"
+         default="deliver-all"
+         basedir="."
+        >
+
+ 
+    <import file="components/anttask/anttask.xml"/>
+    <import file="components/elementmodel/elementmodel.xml"/>
+    <import file="components/properties/properties.xml"/>
+    <import file="components/rttibase/rttibase.xml"/>
+    <import file="components/rtti/rtti.xml"/>
+    <import file="components/rttiutils/rttiutils.xml"/>
+    <import file="components/streaming/streaming.xml"/>
+    <import file="components/xmlstreaming/xmlstreaming.xml"/>
+    <import file="components/xmlstreaming2/xmlstreaming2.xml"/>
+    <import file="components/xmlstreaming3/xmlstreaming3.xml"/>
+    <import file="components/compactformat/compactformat.xml"/>
+
+
+    <target name="build.anttasks" depends="anttask.jar"/> 
+
+    <target name="build.modules"
+            depends="
+            elementmodel.jar,
+            rtti.jar,
+            rttiutils.jar,
+            streaming.jar,
+            xmlstreaming.jar,
+            xmlstreaming2.jar,
+            xmlstreaming3.jar,
+            compactformat.jar"/>
+
+    <target name="build" depends="build.modules"/>
+
+    <target name="deliver"
+            depends="
+            easyxml.easyxml.lib.all,
+            elementmodel.elementmodel.lib.all,
+            rttibase.lib.public,
+            rtti.rtti.lib.public,
+            rttiutils.lib.public,
+            streaming.streaming.lib.public,
+            xmlstreaming.xmlstreaming.lib.public,
+            xmlstreaming2.xmlstreaming2.lib.public,
+            xmlstreaming3.xmlstreaming3.lib.public"/>
+
+    <target name="deliver-all"
+            description="building a library with all sources"
+            depends="
+            rtti.rtti.lib.all,
+            easyxml.easyxml.lib.all,
+            elementmodel.elementmodel.lib.all,
+            rttibase.rttibase.lib.all,
+            rttiutils.rttiutils.lib.all,
+            streaming.streaming.lib.all,
+            xmlstreaming.xmlstreaming.lib.all,
+            xmlstreaming2.xmlstreaming2.lib.all,
+            xmlstreaming3.xmlstreaming3.lib.all,
+            compactformat.lib.all"/>
+
+    <target name="clean"
+            depends="
+            rtti.clear.all,
+            rttiutils.clear,
+            rttibase.clear.all,
+            properties.clear,
+            rttiutils.clear,
+            streaming.clear,
+            xmlstreaming.clear,
+            xmlstreaming2.clear,
+            xmlstreaming3.clear,
+            compactformat.clear">
+    </target>
+
+    
+
+
+</project>

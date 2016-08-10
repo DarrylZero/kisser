@@ -1,0 +1,47 @@
+﻿               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               License for use and distribution.
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ 1. All rights to these products are exclusively owned by the authors - a 
+    group of developers "Steammachine group".
+
+ 2. Citizens have the right to use this version of the product for free 
+    beyond commercial purposes.
+
+ 3. The author reserves the right to revoke this license for
+    any of the following versions of the product.
+
+ 4. Software libraries of this product are distributed freely, providing the
+    the product is not altered or changed. No individual or company may charge 
+    a fee for distributing the product without a written permission of the 
+    author.
+
+ 5. All software products under this license are available on the principle
+    "AS IS".
+
+    NO WARRANTY IS INCLUDED AND NONE IS ENVISAGED. YOU USE THIS SOFTWARE AT 
+    YOUR OWN RISK. THE AUTHOUR WON'T BE RESPONSIBLE FOR ANY LOSS OR CORRUPTION
+    OF DATA, ANY LOST PROFITS DUE TO THE USE OR MISUSE OF THIS SOFTWARE.
+
+ 6. You may not use, copy, emulate, create new versions, rent, lease, sell, 
+    modify, decompile, disassemble, study the code of the program using other 
+    methods, transfer the licensed program, or any of its components, other 
+    than specified in this license agreement. Any such unauthorized use 
+    results in an automatic and immediate termination of this agreement and 
+    may involve prosecution.
+
+    All rights, not clearly stated herein, are reserved by the developers of 
+    the product.
+
+ 7. Using any of the products means that you understand the terms of this 
+    license agreement and accept them.
+
+
+ 8. If you, for whatever reason, do not agree with this license agreement, 
+    you must delete all files of this product from your storage devices and 
+    cease its usage.
+
+    Thank you for using this product.
+
+			            Development team - Steammachine group.

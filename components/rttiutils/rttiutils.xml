@@ -1,0 +1,159 @@
+<project name="rttiutils"
+         basedir="../.."
+         default="rttiutils.lib.all">
+
+    <!-- Секция импорта файлов -->
+    <!--<import file="../../../commonlibs/anttasksdefinitions.xml"/>-->
+
+    <path id="rttiutils.class.path">
+        <pathelement path="build/components/rttiutils/classes"/>
+
+        <fileset dir="../commonlibs">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="../libraries/libs">
+            <include name="junit.jar"/>
+        </fileset>
+    </path>
+
+    <property file="components/rttiutils/rttiutils.properties"/>
+
+    <taskdef name="smartcopy"
+             classname="ru.steamengine.helpers.anttasks.smartcopy.SmartCopy"
+             classpathref="rttiutils.class.path"/>
+
+    <target name="rttiutils.clear">
+        <delete dir="build/components/rttiutils"/>
+    </target>
+
+    <target name="rttiutils.jar.check">
+        <uptodate property="rttiutils.jar.skip"
+                  targetfile="../commonlibs/rttiutils.jar">
+            <srcfiles dir="components/rttiutils/META-INF"/>
+            <srcfiles dir="components/rttiutils/src"/>
+            <srcfiles file="components/rttiutils/rttiutils.xml"/>
+            <srcfiles file="components/rttiutils/rttiutils.properties"/>
+        </uptodate>
+    </target>
+
+    <taskdef name="filechecker"
+             classname="ru.steamengine.helpers.anttasks.filechecker.FileChecker"
+             classpathref="rttiutils.class.path"/>
+
+
+    <!--unless="rttiutils.jar.skip"-->
+    <target name="rttiutils.jar"
+            depends="rttiutils.jar.check"
+            unless="rttiutils.jar.skip">
+
+        <mkdir dir="build/components/rttiutils"/>
+        <mkdir dir="build/components/rttiutils/classes"/>
+
+        <filechecker startpath="components/rttiutils/src"/>
+        <!-- Построение компонента -->
+        <javac target="1.6"
+               source="1.6"
+               srcdir="components/rttiutils/src"
+               destdir="build/components/rttiutils/classes"
+               debug="true"
+               optimize="on"
+               encoding="utf-8"
+               classpathref="rttiutils.class.path">
+        </javac>
+
+        <copydir src="components/rttiutils/META-INF" dest="build/components/rttiutils/classes/META-INF"/>
+
+        <copy todir="build/components/rttiutils/classes/META-INF">
+            <fileset dir="components/licenses">
+                <include name="Lic*.txt"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+
+        <jar destfile="../commonlibs/rttiutils.jar"
+             basedir="build/components/rttiutils/classes"
+             compress="false">
+            <manifest>
+                <attribute name="productname" value="${rttiutils.build.productname}"/>
+                <attribute name="version" value="${rttiutils.build.version}"/>
+            </manifest>
+        </jar>
+
+    </target>
+
+
+    <target name="smart-copy-rttiutils-public"
+            description="coping the source codes for common use"
+            depends="rttiutils.jar">
+
+
+        <mkdir dir="components/rttiutils/temp"/>
+        <smartcopy sourcedir="components/rttiutils/src"
+                   targetdir="components/rttiutils/temp">
+            <item value="Public API"/>
+        </smartcopy>
+
+    </target>
+
+    <target name="smart-copy-rttiutils-all"
+            description="coping the source codes for common use"
+            depends="rttiutils.jar">
+
+        <mkdir dir="components/rttiutils/temp"/>
+
+        <smartcopy sourcedir="components/rttiutils/src"
+                   targetdir="components/rttiutils/temp">
+            <item value="class"/>
+            <item value="interface"/>
+            <item value="enum"/>
+        </smartcopy>
+
+    </target>
+
+
+    <target name="rttiutils.zip.check"
+            depends="smart-copy-rttiutils-public">
+        <uptodate property="rttiutils.zip.skip"
+                  targetfile="../commonlibs/rttiutils-src.jar">
+            <srcfiles file="build/components/rttiutils.jar"/>
+            <srcfiles dir="components/rttiutils/temp"/>
+        </uptodate>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="rttiutils.lib.public"
+            description="build library for common use"
+            depends="rttiutils.jar, smart-copy-rttiutils-public, rttiutils.zip.check"
+            unless="rttiutils.zip.skip">
+
+
+        <mkdir dir="build/components/rttiutils/temp"/>
+
+        <!--копируем Jar -->
+        <copyfile src="../commonlibs/rttiutils.jar" dest="build/components/rttiutils/temp/rttiutils.jar"/>
+
+        <jar destfile="../commonlibs/rttiutils-src.jar"
+             basedir="components/rttiutils/temp"
+             compress="true">
+        </jar>
+
+        <delete dir="components/rttiutils/temp"/>
+    </target>
+
+
+    <!--построение библиотеки-->
+    <target name="rttiutils.lib.all"
+            description="build library for common use"
+            depends="rttiutils.jar, rttiutils.lib.public">
+
+        <jar destfile="../commonlibs/rttiutils-src-all.jar"
+             basedir="components/rttiutils/src"
+             compress="true">
+        </jar>
+    </target>
+
+</project>

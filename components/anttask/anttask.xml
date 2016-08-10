@@ -1,0 +1,92 @@
+<project name="anttask"
+         basedir="."
+         default="anttask.jar">
+
+
+    <path id="anttask.class.path">
+        <pathelement path="build/components/anttask/classes"/>
+                         
+        <fileset dir="../commonlibs">
+            <include name="rttibase.jar"/>
+        </fileset>
+    </path>
+
+
+    <target name="anttask.initprops">
+        <!--<loadproperties   file="components/anttask/anttask.properties"/>-->
+        <property file="components/anttask/anttask.properties" />
+    </target>
+
+
+    <path id="anttask.filechecker.path">
+        <fileset dir="../commonlibs">
+            <include name="anttask.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef name="filechecker"
+             classname="ru.steamengine.helpers.anttasks.filechecker.FileChecker"
+             classpathref="anttask.filechecker.path"/>
+
+    <target name="anttask.clear">
+        <delete dir="build/components/anttask"/>
+    </target>
+
+    <target name="anttask.jar.check">
+        <uptodate property="anttask.jar.skip"
+                  targetfile="../commonlibs/anttask.jar">
+
+            <srcfiles dir="components/anttask/src"/>
+            <srcfiles file="components/anttask/anttask.xml"/>
+            <srcfiles file="components/anttask/anttask.properties"/>
+        </uptodate>
+    </target>
+
+                            
+    <target name="anttask.jar"
+            depends="
+            anttask.initprops, 
+            anttask.jar.check"
+
+            unless="anttask.jar.skip"
+            >
+
+        <mkdir dir="build/components/anttask"/>
+        <mkdir dir="build/components/anttask/classes"/>
+        <filechecker startpath="components/anttask/src"/>
+        <javac target="1.6"
+               source="1.6"
+               srcdir="components/anttask/src"
+               destdir="build/components/anttask/classes"
+               debug="true"
+               optimize="on"
+               encoding="utf8"
+               classpathref="anttask.class.path">
+        </javac>
+
+        <copydir src="components/anttask/META-INF"
+                 dest="build/components/anttask/classes/META-INF"/>
+
+        <copy todir="build/components/anttask/classes/META-INF">
+            <fileset dir="components/licenses">
+                <include name="Lic*.txt"/>
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+
+        <jar destfile="../commonlibs/anttask.jar"
+             basedir="build/components/anttask/classes"
+             compress="true">
+            <manifest>                                      
+                <attribute name="Version" value="${anttask.build.version}"/>
+            </manifest>
+        </jar>
+
+        <jar destfile="../commonlibs/anttask_src.jar"
+             basedir="components/anttask/src"
+             compress="true"/>
+    </target>
+
+</project>
